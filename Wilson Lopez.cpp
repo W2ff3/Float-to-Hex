@@ -11,13 +11,46 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
-using namespace std;
 
-void Conversion(unsigned int, vector<char>&);
-
-vector<char> Float_To_Hex(float& FP)
+void Conversion(unsigned int conv, std::vector<char>& Hex_Char)
 {
-	vector<char> Hex_Char;
+	if (conv == 0)
+		Hex_Char.push_back('0');
+	else if (conv == 1)
+		Hex_Char.push_back('1');
+	else if (conv == 2)
+		Hex_Char.push_back('2');
+	else if (conv == 3)
+		Hex_Char.push_back('3');
+	else if (conv == 4)
+		Hex_Char.push_back('4');
+	else if (conv == 5)
+		Hex_Char.push_back('5');
+	else if (conv == 6)
+		Hex_Char.push_back('6');
+	else if (conv == 7)
+		Hex_Char.push_back('7');
+	else if (conv == 8)
+		Hex_Char.push_back('8');
+	else if (conv == 9)
+		Hex_Char.push_back('9');
+	else if (conv == 10)
+		Hex_Char.push_back('A');
+	else if (conv == 11)
+		Hex_Char.push_back('B');
+	else if (conv == 12)
+		Hex_Char.push_back('C');
+	else if (conv == 13)
+		Hex_Char.push_back('D');
+	else if (conv == 14)
+		Hex_Char.push_back('E');
+	else if (conv == 15)
+		Hex_Char.push_back('F');
+}
+
+std::vector<char> Float_To_Hex(float& FP)
+{
+	std::vector<char> Hex_Char;
 	unsigned int FPint = (int)FP;
 	unsigned int conv[6];
 	float FPdecimal = (FP - FPint);
@@ -52,13 +85,11 @@ vector<char> Float_To_Hex(float& FP)
 	return Hex_Char;
 }
 
-void Display_1D_Vector(vector<char>& Hex)
+void Display_1D_Vector(std::vector<char>& Hex)
 {
-	cout << "Hexadecimal Equivalent: ";
+	std::cout << "Hexadecimal Equivalent: ";
 	for (unsigned int i = 0; i < Hex.size(); i++)
-	{
-		cout << Hex[i];
-	}
+		std::cout << Hex[i];
 }
 
 int main()
@@ -67,51 +98,15 @@ int main()
 	float FP;
 	do
 	{
-		cout << "---------------------------------------------" << endl;
-		cout << "Input a floating-point number: ";
-		cin >> FP;
-		vector<char> Hexadecimal_Number = Float_To_Hex(FP);
+		std::cout << "---------------------------------------------" << std::endl;
+		std::cout << "Input a floating-point number: ";
+		std::cin >> FP;
+		std::vector<char> Hexadecimal_Number = Float_To_Hex(FP);
 		Display_1D_Vector(Hexadecimal_Number);
-		cout << endl << endl << "Do you want to continue (Y/y)? ";
-		cin >> response;
-		cout << endl;
+		std::cout << std::endl << std::endl << "Do you want to continue (Y/y)? ";
+		std::cin >> response;
+		std::cout << std::endl;
 	} while ((response == 'Y') || (response == 'y'));
 
 	return 0;
-}
-
-void Conversion(unsigned int conv, vector<char>& Hex_Char)
-{
-	if (conv == 0)
-		Hex_Char.push_back('0');
-	else if (conv == 1)
-		Hex_Char.push_back('1');
-	else if (conv == 2)
-		Hex_Char.push_back('2');
-	else if (conv == 3)
-		Hex_Char.push_back('3');
-	else if (conv == 4)
-		Hex_Char.push_back('4');
-	else if (conv == 5)
-		Hex_Char.push_back('5');
-	else if (conv == 6)
-		Hex_Char.push_back('6');
-	else if (conv == 7)
-		Hex_Char.push_back('7');
-	else if (conv == 8)
-		Hex_Char.push_back('8');
-	else if (conv == 9)
-		Hex_Char.push_back('9');
-	else if (conv == 10)
-		Hex_Char.push_back('A');
-	else if (conv == 11)
-		Hex_Char.push_back('B');
-	else if (conv == 12)
-		Hex_Char.push_back('C');
-	else if (conv == 13)
-		Hex_Char.push_back('D');
-	else if (conv == 14)
-		Hex_Char.push_back('E');
-	else if (conv == 15)
-		Hex_Char.push_back('F');
 }
