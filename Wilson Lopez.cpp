@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <vector>
 
+// Converts decimal digit into hexidecimal.
 void Conversion(unsigned int conv, std::vector<char>& Hex_Char)
 {
 	if (conv == 0)
@@ -51,9 +52,11 @@ void Conversion(unsigned int conv, std::vector<char>& Hex_Char)
 std::vector<char> Float_To_Hex(float& FP)
 {
 	std::vector<char> Hex_Char;
-	unsigned int FPint = (int)FP;
+
+	unsigned int FPint = (int)FP; // Store integer part of input.
 	unsigned int conv[6];
-	float FPdecimal = (FP - FPint);
+
+	float FPdecimal = (FP - FPint); // Store decimal part of input.
 	float flconv[6], fldecimal[6];
 
 	do
@@ -96,13 +99,16 @@ int main()
 {
 	char response;
 	float FP;
+
 	do
 	{
 		std::cout << "---------------------------------------------" << std::endl;
 		std::cout << "Input a floating-point number: ";
 		std::cin >> FP;
-		std::vector<char> Hexadecimal_Number = Float_To_Hex(FP);
+
+		std::vector<char> Hexadecimal_Number = Float_To_Hex(FP); // Float-To-Hex() will return a value and initialize Hexadecimal_Number.
 		Display_1D_Vector(Hexadecimal_Number);
+
 		std::cout << std::endl << std::endl << "Do you want to continue (Y/y)? ";
 		std::cin >> response;
 		std::cout << std::endl;
