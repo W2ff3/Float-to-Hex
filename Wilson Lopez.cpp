@@ -57,12 +57,14 @@ std::vector<char> Float_To_Hex(const double FP)
 	std::vector<char> Hex_Char;
 	std::vector<unsigned int> remainder_integer, remainder_decimal;
 
+	int FPinteger;
 	double FPtemp;
-
-	int FPinteger = trunc(FP); // Store integer number of input and temporary integer numbers.
-	double FPdecimal = FP - FPinteger; // Store decimal fractional number of input and temporary fractional numbers.
+	double FPdecimal;
 
 	// Integer Part
+	FPinteger = trunc(FP); // Store integer number of input and temporary dividends for loop iterations.
+	FPdecimal = FP - FPinteger; // Store decimal fractional number of input and fractional numbers used for loop iterations.
+
 	if (FPinteger > 15)
 	{
 		do
@@ -70,7 +72,10 @@ std::vector<char> Float_To_Hex(const double FP)
 			FPtemp = FPinteger / static_cast<double>(16); // Stores value that is split into FPdecimal and FPinteger.
 			FPdecimal = FPtemp - trunc(FPtemp); // Stores fractional number that will be used to get remainder, and directly correlates with do-while loop condition.
 			
-			remainder_integer.push_back(FPdecimal * 16); // Push back the remainder of the previous division.
+			if (FPdecimal != 0)
+				remainder_integer.push_back(FPdecimal * 16); // Push back the remainder of the previous division.
+			else
+				break;
 			
 			FPinteger = trunc(FPtemp); // Stores dividend of next iteration.
 		} while (FPdecimal != 0);
@@ -79,6 +84,9 @@ std::vector<char> Float_To_Hex(const double FP)
 		remainder_integer.push_back(FPinteger);
 
 	// Decimal Part
+	FPinteger = trunc(FP); // Store integer digit that is pushed back into remainder_decimal integer vector.
+	FPdecimal = FP - FPinteger; // Store temporary fractional multiplicand for loop iterations.
+
 	if (FPdecimal != 0)
 	{
 		do
@@ -103,7 +111,8 @@ std::vector<char> Float_To_Hex(const double FP)
 	reverse(remainder_integer.begin(), remainder_integer.end());
 	Conversion(remainder_integer, Hex_Char);
 
-	Hex_Char.push_back('.');
+	if (!remainder_decimal.empty())
+		Hex_Char.push_back('.');
 
 	// Convert fractional section of input into hexadecimal.
 	Conversion(remainder_decimal, Hex_Char);
