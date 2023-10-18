@@ -52,38 +52,44 @@ void Conversion(unsigned int conv, std::vector<char>& Hex_Char)
 std::vector<char> Float_To_Hex(float& FP)
 {
 	std::vector<char> Hex_Char;
+	std::vector<int> remainder_integer, remainder_decimal;
 
-	unsigned int FPint = (int)FP; // Store integer part of input.
-	unsigned int conv[6];
+	float FPtemp;
+	int FPinteger = trunc(FP); // Store integer part of input.
+	float FPdecimal = FP - FPinteger; // Store decimal part of input.
 
-	float FPdecimal = (FP - FPint); // Store decimal part of input.
-	float flconv[6], fldecimal[6];
-
-	do
+	// Integer Part
+	if (FPinteger > 15)
 	{
-		conv[0] = FPint % 16;
-		Conversion(conv[0], Hex_Char);
-		FPint /= 16;
-	} while (FPint > 0);
-
-	reverse(Hex_Char.begin(), Hex_Char.end());
-	Hex_Char.push_back('.');
-
-	if (FPdecimal > 0)
-	{
-		conv[1] = FPdecimal * 16;
-		Conversion(conv[1], Hex_Char);
-
-		for (int i = 2; i < 6; i++)
+		do
 		{
-			flconv[i] = FPdecimal * 16;
-			fldecimal[i] = flconv[i] - conv[i-1];
-			conv[i] = fldecimal[i] * 16;
-			Conversion(conv[i], Hex_Char);
-		}
+			FPtemp = int(FPinteger) / 16;
+			remainder_integer.push_back(FPtemp * 16);
+			FPinteger = trunc(FPtemp);
+		} while (FPtemp != 0);
 	}
-	if (FPdecimal == 0)
-		Hex_Char.push_back('0');
+	else
+		remainder_integer.push_back(FPinteger);
+
+	// Decimal Part
+	if (FPdecimal != 0)
+	{
+		do
+		{
+			FPtemp = FPdecimal * 16;
+			FPinteger = trunc(FPtemp); // The integer part of FPtemp is the remainder.
+			remainder_decimal.push_back(FPinteger);
+			FPdecimal = FPtemp - FPinteger;
+		} while (FPtemp != 0);
+	}
+
+	// Conversion to Hex
+	reverse(remainder_integer.begin(), remainder_integer.end());
+	for (unsigned int i = 0; i < remainder_integer.size(); i++)
+		Conversion(remainder_integer[i], Hex_Char);
+	Hex_Char.push_back('.');
+	for (unsigned int i = 0; i < remainder_decimal.size(); i++)
+		Conversion(remainder_decimal[i], Hex_Char);
 
 	return Hex_Char;
 }
