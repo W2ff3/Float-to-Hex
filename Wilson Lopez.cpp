@@ -49,14 +49,14 @@ void Conversion(unsigned int conv, std::vector<char>& Hex_Char)
 		Hex_Char.push_back('F');
 }
 
-std::vector<char> Float_To_Hex(float& FP)
+std::vector<char> Float_To_Hex(double& FP)
 {
 	std::vector<char> Hex_Char;
 	std::vector<int> remainder_integer, remainder_decimal;
 
-	float FPtemp;
+	double FPtemp;
 	int FPinteger = trunc(FP); // Store integer part of input.
-	float FPdecimal = FP - FPinteger; // Store decimal part of input.
+	double FPdecimal = FP - FPinteger; // Store decimal part of input.
 
 	// Integer Part
 	if (FPinteger > 15)
@@ -104,7 +104,7 @@ void Display_1D_Vector(std::vector<char>& Hex)
 int main()
 {
 	char response;
-	float FP;
+	double FP;
 
 	do
 	{
