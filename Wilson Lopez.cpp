@@ -13,77 +13,100 @@
 #include <vector>
 
 // Converts decimal digit into hexidecimal.
-void Conversion(unsigned int conv, std::vector<char>& Hex_Char)
+void Conversion(std::vector<unsigned int> dec, std::vector<char>& Hex_Char)
 {
-	if (conv == 0)
-		Hex_Char.push_back('0');
-	else if (conv == 1)
-		Hex_Char.push_back('1');
-	else if (conv == 2)
-		Hex_Char.push_back('2');
-	else if (conv == 3)
-		Hex_Char.push_back('3');
-	else if (conv == 4)
-		Hex_Char.push_back('4');
-	else if (conv == 5)
-		Hex_Char.push_back('5');
-	else if (conv == 6)
-		Hex_Char.push_back('6');
-	else if (conv == 7)
-		Hex_Char.push_back('7');
-	else if (conv == 8)
-		Hex_Char.push_back('8');
-	else if (conv == 9)
-		Hex_Char.push_back('9');
-	else if (conv == 10)
-		Hex_Char.push_back('A');
-	else if (conv == 11)
-		Hex_Char.push_back('B');
-	else if (conv == 12)
-		Hex_Char.push_back('C');
-	else if (conv == 13)
-		Hex_Char.push_back('D');
-	else if (conv == 14)
-		Hex_Char.push_back('E');
-	else if (conv == 15)
-		Hex_Char.push_back('F');
+	for (unsigned int i = 0; i < dec.size(); i++)
+	{
+		if (dec[i] == 0)
+			Hex_Char.push_back('0');
+		else if (dec[i] == 1)
+			Hex_Char.push_back('1');
+		else if (dec[i] == 2)
+			Hex_Char.push_back('2');
+		else if (dec[i] == 3)
+			Hex_Char.push_back('3');
+		else if (dec[i] == 4)
+			Hex_Char.push_back('4');
+		else if (dec[i] == 5)
+			Hex_Char.push_back('5');
+		else if (dec[i] == 6)
+			Hex_Char.push_back('6');
+		else if (dec[i] == 7)
+			Hex_Char.push_back('7');
+		else if (dec[i] == 8)
+			Hex_Char.push_back('8');
+		else if (dec[i] == 9)
+			Hex_Char.push_back('9');
+		else if (dec[i] == 10)
+			Hex_Char.push_back('A');
+		else if (dec[i] == 11)
+			Hex_Char.push_back('B');
+		else if (dec[i] == 12)
+			Hex_Char.push_back('C');
+		else if (dec[i] == 13)
+			Hex_Char.push_back('D');
+		else if (dec[i] == 14)
+			Hex_Char.push_back('E');
+		else if (dec[i] == 15)
+			Hex_Char.push_back('F');
+	}
 }
 
-std::vector<char> Float_To_Hex(float& FP)
+std::vector<char> Float_To_Hex(const double FP)
 {
 	std::vector<char> Hex_Char;
+	std::vector<unsigned int> remainder_integer, remainder_decimal;
 
-	unsigned int FPint = (int)FP; // Store integer part of input.
-	unsigned int conv[6];
+	double FPtemp;
 
-	float FPdecimal = (FP - FPint); // Store decimal part of input.
-	float flconv[6], fldecimal[6];
+	int FPinteger = trunc(FP); // Store integer number of input and temporary integer numbers.
+	double FPdecimal = FP - FPinteger; // Store decimal fractional number of input and temporary fractional numbers.
 
-	do
+	// Integer Part
+	if (FPinteger > 15)
 	{
-		conv[0] = FPint % 16;
-		Conversion(conv[0], Hex_Char);
-		FPint /= 16;
-	} while (FPint > 0);
+		do
+		{
+			FPtemp = FPinteger / static_cast<double>(16); // Stores value that is split into FPdecimal and FPinteger.
+			FPdecimal = FPtemp - trunc(FPtemp); // Stores fractional number that will be used to get remainder, and directly correlates with do-while loop condition.
+			
+			remainder_integer.push_back(FPdecimal * 16); // Push back the remainder of the previous division.
+			
+			FPinteger = trunc(FPtemp); // Stores dividend of next iteration.
+		} while (FPdecimal != 0);
+	}
+	else
+		remainder_integer.push_back(FPinteger);
 
-	reverse(Hex_Char.begin(), Hex_Char.end());
+	// Decimal Part
+	if (FPdecimal != 0)
+	{
+		do
+		{
+			FPtemp = FPdecimal * 16; // Stores value that is split into FPinteger and FPdecimal.
+			FPinteger = trunc(FPtemp); // The integer part of FPtemp is the remainder.
+
+			// Break the do-while loop if the temporary fractional number is equal to zero (FPtemp == 0).
+			// This prevents a zero from being pushed back into the remainder_decimal vector.
+			if (FPtemp != 0)
+				remainder_decimal.push_back(FPinteger); // Push back the integer part of FPtemp into vector.
+			else
+				break;
+
+			FPdecimal = FPtemp - FPinteger; // Update decimal value for next iteration.
+		} while (FPtemp != 0);
+	}
+
+	// Conversion to Hex
+
+	// Convert integer section of input into hexadecimal.
+	reverse(remainder_integer.begin(), remainder_integer.end());
+	Conversion(remainder_integer, Hex_Char);
+
 	Hex_Char.push_back('.');
 
-	if (FPdecimal > 0)
-	{
-		conv[1] = FPdecimal * 16;
-		Conversion(conv[1], Hex_Char);
-
-		for (int i = 2; i < 6; i++)
-		{
-			flconv[i] = FPdecimal * 16;
-			fldecimal[i] = flconv[i] - conv[i-1];
-			conv[i] = fldecimal[i] * 16;
-			Conversion(conv[i], Hex_Char);
-		}
-	}
-	if (FPdecimal == 0)
-		Hex_Char.push_back('0');
+	// Convert fractional section of input into hexadecimal.
+	Conversion(remainder_decimal, Hex_Char);
 
 	return Hex_Char;
 }
@@ -98,7 +121,7 @@ void Display_1D_Vector(std::vector<char>& Hex)
 int main()
 {
 	char response;
-	float FP;
+	double FP;
 
 	do
 	{
