@@ -1,5 +1,6 @@
 // Wilson Lopez
-// May 5, 2021
+// Created on May 5, 2021
+// Updated on October 18, 2023
 
 // References:
 // https://www.programiz.com/cpp-programming/examples/quotient-remainder
@@ -13,7 +14,7 @@
 #include <vector>
 
 // Converts decimal digit inside vector of unsigned integers into hexidecimal.
-void Conversion(std::vector<unsigned int> dec, std::vector<char>& Hex_Char)
+void Conversion(const std::vector<unsigned int>& dec, std::vector<char>& Hex_Char)
 {
 	for (unsigned int i = 0; i < dec.size(); i++)
 	{
@@ -61,7 +62,8 @@ std::vector<char> Float_To_Hex(const double FP)
 	double FPtemp;
 	double FPdecimal;
 
-	// Integer Part
+	/* Integer Part */
+
 	FPinteger = trunc(FP); // Stores integer number of input and integer dividends for do-while loop iterations.
 	FPdecimal = FP - FPinteger; // Stores decimal fractional number of input and fractional numbers used for do-while loop iterations.
 
@@ -72,22 +74,25 @@ std::vector<char> Float_To_Hex(const double FP)
 			FPtemp = FPinteger / static_cast<double>(16); // Stores value that is split into FPdecimal and FPinteger.
 			FPdecimal = FPtemp - trunc(FPtemp); // Stores fractional number that will be used to get remainder, and directly correlates with do-while loop condition.
 			
+			// Push back the remainder of the previous division while FPdecimal does not equal zero.
+			if (FPdecimal != 0)
+				remainder_integer.push_back(FPdecimal * 16);
 			// Break the do-while loop, once FPdecimal equals zero.
 			// This prevents an unnecessary zero from being pushed back into remainder_integer.
-			if (FPdecimal != 0)
-				remainder_integer.push_back(FPdecimal * 16); // Push back the remainder of the previous division.
 			else
-				break;
+				break; 
 
 			FPinteger = trunc(FPtemp); // Update dividend for next iteration.
 		} while (FPdecimal != 0);
 
 	}
+	// If FPinteger is less than 15, then no conversion is necessary.
 	else
 		remainder_integer.push_back(FPinteger);
 
-	// Decimal Part
-	FPinteger = trunc(FP); // Stores decimal digit that is pushed back into remainder_decimal.
+	/* Decimal Part */
+
+	FPinteger = trunc(FP); // Stores integer digit that is pushed back into remainder_decimal.
 	FPdecimal = FP - FPinteger; // Stores fractional multiplicands for do-while loop iterations.
 
 	if (FPdecimal != 0)
@@ -96,11 +101,12 @@ std::vector<char> Float_To_Hex(const double FP)
 		{
 			FPtemp = FPdecimal * 16; // Stores value that is split into FPinteger and FPdecimal, and halts loop iteration once it equals to zero.
 			FPinteger = trunc(FPtemp); // The integer part of FPtemp is the remainder.
-
+			
+			// Push back the integer part of FPtemp into vector while FPtemp does not equal zero.
+			if (FPtemp != 0)
+				remainder_decimal.push_back(FPinteger);
 			// Break the do-while loop if the temporary fractional number is equal to zero (FPtemp == 0).
 			// This prevents an unecessary zero from being pushed back into the remainder_decimal vector.
-			if (FPtemp != 0)
-				remainder_decimal.push_back(FPinteger); // Push back the integer part of FPtemp into vector.
 			else
 				break;
 
@@ -108,7 +114,7 @@ std::vector<char> Float_To_Hex(const double FP)
 		} while (FPtemp != 0);
 	}
 
-	// Conversion to Hex
+	/* Conversion to Hex */
 
 	// Convert integer section of input into hexadecimal.
 	reverse(remainder_integer.begin(), remainder_integer.end());
@@ -126,7 +132,7 @@ std::vector<char> Float_To_Hex(const double FP)
 	return Hex_Char;
 }
 
-void Display_1D_Vector(std::vector<char>& Hex)
+void Display_1D_Vector(const std::vector<char>& Hex)
 {
 	std::cout << "Hexadecimal Equivalent: ";
 	for (unsigned int i = 0; i < Hex.size(); i++)
